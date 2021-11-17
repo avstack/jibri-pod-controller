@@ -27,7 +27,10 @@ docker build .
 
 ## Example
 
-`jibri.conf` (irrelevant settings left out):
+### `jibri.conf`
+
+Irrelevant settings have been left out.
+
 ```
 jibri {
   id = "$POD_NAME"
@@ -50,7 +53,7 @@ jibri {
 }
 ```
 
-### `jibri-pod-controller` deployment (replace the `image` with the URL to your built image).
+### `jibri-pod-controller` deployment
 
 * Replace the `image` with the URL to your built container image of `jibri-pod-controller`.
 * In this example, the `JIBRI_BUSY_LABELS` are set to `app=jibri,state=busy`. You could set up your `jibri` Deployment to select `app=jibri,state=idle`.
