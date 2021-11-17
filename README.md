@@ -7,8 +7,23 @@ When managing a large [Jibri](https://github.com/jitsi/jibri) deployment, you us
  * Deploy `jibri` using a Deployment. Set the Deployment's `replicas` to the number of *spare* `jibri` pods you want to run. 
  * Deploy `jibri-pod-controller` in your cluster and give it RBAC permission to get/list/patch `jibri` pods.
  * Configure `jibri` in single use mode, and configure it to send webhook requests to `jibri-pod-controller`.
- * When a `jibri` pod starts to record or live-stream, `jibri-pod-controller` will patch the pod's labels so that they don't match the Deployment's label selector. This *isolates* the `jibri` pod from the Deployment – the Deployment will immediately launch another `jibri` pod to replace it (thus keeping the required number of spare pods), and the isolated `jibri` pod will continue to run.
+ * When a `jibri` pod starts to record or live-stream, `jibri-pod-controller` will patch the pod's labels so that they don't match the Deployment's label selector. This *isolates* the `jibri` pod from the Deployment — the Deployment will immediately launch another `jibri` pod to replace it (thus keeping the required number of spare pods), and the isolated `jibri` pod will continue to run.
  * When `jibri` finishes recording or live-streaming, `jibri-pod-controller` will delete the pod. A sweeper runs on a configurable interval to remove any expired `jibri` pods in case `jibri` fails to send the webhook for any reason. If multiple `jibri-pod-controller` pods are running, one is elected to run the sweeper.
+
+## Building from source
+
+Built container images are not yet publicly available. In the meantime, build from source and then use your preferred container builder to build a container image.
+
+`rustc` and `cargo` are required — [rustup](https://rustup.rs) is the easiest way to install them.
+
+For example, using Docker:
+
+```
+git clone https://github.com/avstack/jibri-pod-controller.git
+cd jibri-pod-controller
+cargo build --release
+docker build .
+```
 
 ## Example
 
@@ -38,7 +53,7 @@ jibri {
 ### `jibri-pod-controller` deployment (replace the `image` with the URL to your built image).
 
 * Replace the `image` with the URL to your built container image of `jibri-pod-controller`.
-* In this example, the `JIBRI_BUSY_LABELS` are set to `app=jibri,state=busy`. You could set your Deployment to label Jibri with `app=jibri,state=idle`.
+* In this example, the `JIBRI_BUSY_LABELS` are set to `app=jibri,state=busy`. You could set up your `jibri` Deployment to select `app=jibri,state=idle`.
 
 ```
 apiVersion: rbac.authorization.k8s.io/v1
