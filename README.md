@@ -133,7 +133,7 @@ spec:
       serviceAccountName: jibri-pod-controller
       terminationGracePeriodSeconds: 30
       containers:
-      - name: jibri-controller
+      - name: jibri-pod-controller
         image: your.image.registry.url/jibri-pod-controller:your-tag
         env:
         - name: RUST_LOG
@@ -205,7 +205,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: jibri-controller
+  name: jibri-pod-controller
   namespace: default
 spec:
   type: ClusterIP
