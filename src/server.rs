@@ -67,7 +67,13 @@ pub async fn server(
 
 #[tracing::instrument(level = "debug", skip(pods), err)]
 async fn handle_request(req: Request<Body>, pods: Api<Pod>) -> Result<Response<Body>> {
-  let path: Vec<_> = req.uri().path().split('/').collect();
+  let mut path_parts = req.uri().path().split('/');
+
+  if path_parts.next() != Some("") {
+    return bad_request();
+  }
+
+  let path: Vec<_> = path_parts.collect();
 
   match &path[..] {
     ["webhook", pod_name, "v1", "status"] => match *req.method() {
