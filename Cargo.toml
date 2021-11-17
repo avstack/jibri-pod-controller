@@ -1,0 +1,44 @@
+[package]
+name = "jibri-pod-controller"
+description = "Detaches Jibri pods from their Deployment when they start recording or livestreaming, and cleans them up when they finish."
+version = "0.1.0"
+edition = "2021"
+authors = ["Jasper Hugo <jasper@avstack.io>"]
+license = "MIT/Apache-2.0"
+
+[dependencies]
+anyhow = { version = "1", default-features = false, features = ["std"] }
+futures = { version = "0.3", default-features = false }
+hyper = { version = "0.14", default-features = false, features = [
+  "client",
+  "http1",
+  "http2",
+  "server",
+  "stream",
+  "runtime",
+  "tcp",
+] }
+hyper-tls = { version = "0.5", default-features = false }
+k8s-openapi = { version = "0.13", default-features = false, features = ["v1_21"] }
+kube = { version = "0.63", default-features = false, features = ["native-tls", "client"] }
+kube-leader-election = { version = "0.3", default-features = false }
+once_cell = { version = "1", default-features = false }
+rand = { version = "0.8", default-features = false, features = ["std", "std_rng"] }
+serde = { version = "1", default-features = false, features = ["derive"] }
+serde_json = { version = "1", default-features = false, features = ["std"] }
+tokio = { version = "1", default-features = false, features = [
+  "rt-multi-thread",
+  "macros",
+  "parking_lot",
+  "signal",
+] }
+tracing = { version = "0.1", default-features = false, features = ["attributes", "std"] }
+tracing-subscriber = { version = "0.2", default-features = false, features = [
+  "chrono",
+  "env-filter",
+  "fmt",
+  "smallvec",
+  "parking_lot",
+  "tracing-log",
+] }
+

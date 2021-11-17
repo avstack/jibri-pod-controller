@@ -1,0 +1,55 @@
+targets = [{ triple = "x86_64-unknown-linux-musl" }]
+
+[advisories]
+db-path = "~/.cargo/advisory-db"
+db-urls = ["https://github.com/rustsec/advisory-db"]
+vulnerability = "deny"
+unmaintained = "deny"
+yanked = "deny"
+notice = "deny"
+ignore = [
+  # Possible segfault in `time` and `chrono` if localtime_r is called while the environment is being mutated.
+  # We don't use functionality of either crate that would call this function.
+  "RUSTSEC-2020-0071",
+  "RUSTSEC-2020-0159",
+]
+
+[licenses]
+unlicensed = "deny"
+allow = []
+deny = []
+copyleft = "deny"
+allow-osi-fsf-free = "either"
+default = "deny"
+confidence-threshold = 1.0
+exceptions = []
+
+#[[licenses.clarify]]
+#name = "ring"
+#version = "*"
+#expression = "MIT AND ISC AND OpenSSL"
+#license-files = [{ path = "LICENSE", hash = 0xbd0eed23 }]
+
+#[[licenses.clarify]]
+#name = "webpki"
+#version = "*"
+#expression = "ISC"
+#license-files = [{ path = "LICENSE", hash = 0x001c7e6c }]
+
+[licenses.private]
+ignore = true
+registries = []
+
+[bans]
+multiple-versions = "deny"
+wildcards = "deny"
+highlight = "all"
+allow = []
+deny = []
+skip = []
+skip-tree = []
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
