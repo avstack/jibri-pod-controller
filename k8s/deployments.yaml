@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jibri-pod-controller
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jibri-pod-controller
+  template:
+    metadata:
+      labels:
+        app: jibri-pod-controller
+    spec:
+      serviceAccountName: jibri-pod-controller
+      terminationGracePeriodSeconds: 30
+      nodeSelector:
+        alpha.eksctl.io/nodegroup-name: "managed-ng-private"
+      containers:
+      - name: jibri-pod-controller
+        image: 718762496685.dkr.ecr.ap-south-1.amazonaws.com/sariska/jibri-pod-controller:latest
+        env:
+        - name: RUST_LOG
+          value: info
+        - name: PORT
+          value: "8080"
+        - name: JIBRI_HEALTH_PORT
+          value: "2222"
+        - name: JIBRI_BUSY_LABELS
+          value: app=jibri,state=busy
+        - name: SWEEP_INTERVAL
+          value: "300"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 1
+          httpGet:
+            path: /
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 100
+          periodSeconds: 100
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          requests:
+            cpu: 200m
+            memory: 200Mi
