@@ -73,6 +73,7 @@ rules:
   - list
   - patch
   - get
+  - delete
 - apiGroups:
   - coordination.k8s.io
   resources:
