@@ -1,7 +1,7 @@
-FROM docker.io/library/rust:1.56.1-alpine3.14 AS builder
+FROM docker.io/library/alpine:3.14.3 AS builder
 COPY . .
 COPY ./entrypoint.sh /
-RUN apk --update add build-base openssl-dev libc6-compat \
+RUN apk --update add cargo build-base openssl-dev libc6-compat \
  && RUSTFLAGS="-D warnings" cargo build --release --locked
 
 FROM docker.io/library/alpine:3.14.3
