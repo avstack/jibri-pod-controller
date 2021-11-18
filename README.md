@@ -10,18 +10,11 @@ When managing a large [Jibri](https://github.com/jitsi/jibri) deployment, you us
  * When a `jibri` pod starts to record or live-stream, `jibri-pod-controller` will patch the pod's labels so that they don't match the Deployment's label selector. This *isolates* the `jibri` pod from the Deployment — the Deployment will immediately launch another `jibri` pod to replace it (thus keeping the required number of spare pods), and the isolated `jibri` pod will continue to run.
  * When `jibri` finishes recording or live-streaming, `jibri-pod-controller` will delete the pod. A sweeper runs on a configurable interval to remove any expired `jibri` pods in case `jibri` fails to send the webhook for any reason. If multiple `jibri-pod-controller` pods are running, one is elected to run the sweeper.
 
-## Building from source
-
-Built container images are not yet publicly available. In the meantime, build from source and then use your preferred container builder to build a container image.
-
-`rustc` and `cargo` are required — [rustup](https://rustup.rs) is the easiest way to install them.
-
-For example, using Docker:
+## Building a container image from source
 
 ```
 git clone https://github.com/avstack/jibri-pod-controller.git
 cd jibri-pod-controller
-cargo build --release
 docker build .
 ```
 
