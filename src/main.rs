@@ -126,7 +126,7 @@ async fn main() {
 
   let http_client = Client::new();
 
-  let pods: Api<Pod> = Api::namespaced(k8s_client, "default");
+  let pods: Api<Pod> = Api::namespaced(k8s_client, &*NAMESPACE);
 
   let server = tokio::spawn(server(*PORT, pods.clone(), graceful_shutdown_rx));
   let sweeper = tokio::spawn(sweeper(http_client, pods, sweeper_lease_rx, shutdown));
