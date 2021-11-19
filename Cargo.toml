@@ -1,6 +1,4 @@
 
-cargo-features = ["edition2021"]
-
 [package]
 name = "jibri-pod-controller"
 description = "Detaches Jibri pods from their Deployment when they start recording or livestreaming, and cleans them up when they finish."
