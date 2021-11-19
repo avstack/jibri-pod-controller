@@ -4,7 +4,7 @@ metadata:
   name: jibri-pod-controller
   namespace: production
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: jibri-pod-controller
@@ -49,11 +49,11 @@ spec:
             path: /
             port: http
             scheme: HTTP
-          initialDelaySeconds: 100
-          periodSeconds: 100
+          initialDelaySeconds: 3
+          periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
         resources:
           requests:
-            cpu: 200m
-            memory: 200Mi
+            cpu: 5m
+            memory: 8Mi
