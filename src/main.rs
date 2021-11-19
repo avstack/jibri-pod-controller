@@ -12,7 +12,6 @@ use std::{
   },
   time::Duration,
 };
-
 use anyhow::Context;
 use hyper::Client;
 use k8s_openapi::api::core::v1::Pod;
