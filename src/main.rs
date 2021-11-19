@@ -62,13 +62,6 @@ static NAMESPACE: Lazy<String> =
 
 #[tokio::main]
 async fn main() {
-  // env::set_var("NAMESPACE", "production");
-  // env::set_var("POD_NAME", "jibri");
-  // env::set_var("PORT", "8080");
-  // env::set_var("JIBRI_HEALTH_PORT", "2222");
-  // env::set_var("JIBRI_BUSY_LABELS", "app=jibri,state=busy");
-  // env::set_var("SWEEP_INTERVAL", "3000");
-  println!("Into main method");
   tracing_subscriber::fmt()
     .with_env_filter(tracing_subscriber::EnvFilter::from_default_env())
     .with_span_events(FmtSpan::CLOSE)
@@ -87,26 +80,11 @@ async fn main() {
       let _ = graceful_shutdown_tx.send(());
     });
   }
-  println!("Trying to fetch the config");
 
-  let config_result = kube::Config::from_cluster_env();
-  println!("Resolving kube config result...");
-  let _config = match config_result {
-      Ok(config) => {
-        println!("Kube config {:?}", config);
-      },
-      Err(e) => {
-          println!("Error getting config {}", e);
-      }
-  };
-  println!("Kube _config {:?}", _config);
-
-  println!("Before Get k8 client");
   let k8s_client = kube::Client::try_default()
     .await
     .expect("k8s client setup failed");
 
-  println!("Got k8 client");
   let leadership = Arc::new(LeaseLock::new(
     k8s_client.clone(),
     &*NAMESPACE,

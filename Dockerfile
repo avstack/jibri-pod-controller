@@ -1,15 +1,13 @@
-FROM docker.io/library/alpine:3.14.3 AS builder
-COPY . .
-COPY ./entrypoint.sh /
-RUN apk --update add cargo build-base openssl-dev libc6-compat \
- && RUSTFLAGS="-D warnings" cargo build --release --locked
+FROM docker.io/library/rust:1.56.1-alpine3.14 AS builder
+COPY . /usr/src/jibri-pod-controller
+RUN apk --no-cache --update add build-base openssl-dev libc6-compat perl \
+ && cd /usr/src/jibri-pod-controller \
+ && RUSTFLAGS="-D warnings" CFLAGS="-mno-outline-atomics" cargo build --release --locked
 
 FROM docker.io/library/alpine:3.14.3
-RUN apk --update add openssl ca-certificates libc6-compat bash\
+RUN apk --no-cache --update add ca-certificates libc6-compat \
  && adduser --disabled-password --uid 1000 app
-COPY --from=builder target/release/jibri-pod-controller /usr/local/bin/
-COPY --from=builder entrypoint.sh /
-RUN chmod 777 entrypoint.sh
+COPY --from=builder /usr/src/jibri-pod-controller/target/release/jibri-pod-controller /usr/local/bin/
 USER app
 EXPOSE 8080
 ENTRYPOINT ["/usr/local/bin/jibri-pod-controller"]
