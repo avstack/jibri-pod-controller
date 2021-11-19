@@ -86,6 +86,7 @@ async fn handle_request(req: Request<Body>, pods: Api<Pod>) -> Result<Response<B
 
         if webhook_body.status.busy_status == JibriBusyStatus::Expired {
           pods.delete(&pod_name, &DeleteParams::default()).await?;
+          info!("Pod {} deleted successfully by jibri-pod-controller", &pod_name);
         }
         else if webhook_body.status.busy_status == JibriBusyStatus::Busy {
           let labels: BTreeMap<String, String> = JIBRI_BUSY_LABELS
@@ -98,7 +99,7 @@ async fn handle_request(req: Request<Body>, pods: Api<Pod>) -> Result<Response<B
               )
             })
             .collect();
-
+          info!("Patching jibri pod {}", &pod_name);
           let patch = json!({
             "apiVersion": "v1",
             "kind": "Pod",
@@ -111,6 +112,7 @@ async fn handle_request(req: Request<Body>, pods: Api<Pod>) -> Result<Response<B
               &Patch::Apply(&patch),
             )
             .await?;
+          info!("Patched successfully {}", &pod_name);
         }
 
         Ok(
