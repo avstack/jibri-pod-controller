@@ -482,7 +482,8 @@ dependencies = [
 [[package]]
 name = "kube-leader-election"
 version = "0.4.0"
-source = "git+https://github.com/avstack/kube-leader-election.git#a716c648fc2b9893c1f083cf9539102b5c77668f"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "69b2dab06069e263e961c677ee7ff84303d4f18c40daea6091c2a34335fcf690"
 dependencies = [
  "chrono",
  "k8s-openapi",
@@ -1141,9 +1142,9 @@ dependencies = [
 
 [[package]]
 name = "tracing-subscriber"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "80a4ddde70311d8da398062ecf6fc2c309337de6b0f77d6c27aff8d53f6fca52"
+checksum = "7507ec620f809cdf07cccb5bc57b13069a88031b795efd4079b1c71b66c1613d"
 dependencies = [
  "lazy_static",
  "matchers",
