@@ -20,6 +20,7 @@ spec:
       containers:
       - name: jibri-pod-controller
         image: 718762496685.dkr.ecr.ap-south-1.amazonaws.com/sariska/jibri-pod-controller:latest
+        imagePullPolicy: Always
         env:
         - name: RUST_LOG
           value: info
