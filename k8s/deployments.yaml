@@ -31,7 +31,7 @@ spec:
         - name: JIBRI_BUSY_LABELS
           value: app=jibri,state=busy
         - name: POD_DELETION_DELAY
-          value: "100"
+          value: "60"
         - name: SWEEP_INTERVAL
           value: "300"
         - name: POD_NAME
