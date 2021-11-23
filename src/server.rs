@@ -12,26 +12,11 @@ use kube::api::{Api, DeleteParams, Patch, PatchParams};
 use serde_json::json;
 use tokio::sync::oneshot;
 use tracing::info;
-use std::{thread, time::Duration};
-use once_cell::sync::Lazy;
 
 use crate::{
   jibri_schema::{JibriBusyStatus, JibriWebhookRequest},
   JIBRI_BUSY_LABELS,
 };
-
-use std::{
-  env
-};
-
-static POD_DELETION_DELAY: Lazy<Duration> = Lazy::new(|| {
-  Duration::from_secs(
-    env::var("POD_DELETION_DELAY")
-      .expect("missing POD_DELETION_DELAY env var")
-      .parse()
-      .expect("invalid POD_DELETION_DELAY env var"),
-  )
-});
 
 pub async fn server(
   port: u16,
@@ -102,7 +87,6 @@ async fn handle_request(req: Request<Body>, pods: Api<Pod>) -> Result<Response<B
         if webhook_body.status.busy_status == JibriBusyStatus::Expired {
           // Adding delay of 2 min so that pod logs will be collected by the ELK.
           // No logic behind 2 min, Can be changed in future.
-          thread::sleep(*POD_DELETION_DELAY);
           pods.delete(&pod_name, &DeleteParams::default()).await?;
           info!("Pod {} deleted successfully by jibri-pod-controller", &pod_name);
         }

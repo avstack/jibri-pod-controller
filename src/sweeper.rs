@@ -26,13 +26,14 @@ pub async fn sweeper(
 ) -> Result<()> {
   let mut interval = interval(*SWEEP_INTERVAL);
   interval.set_missed_tick_behavior(MissedTickBehavior::Delay);
-
+  debug!("In Sweeper");
   loop {
+    debug!("In Running sweeper Loop");
     if *sweeper_lease_rx.borrow() {
       let jibri_pods = pods
         .list(&ListParams::default().labels(&*JIBRI_BUSY_LABELS))
         .await?;
-
+      info!("Running sweeper");
       for pod in jibri_pods {
         if let Some(name) = &pod.metadata.name {
           if let Some(ip) = pod
@@ -40,6 +41,7 @@ pub async fn sweeper(
             .as_ref()
             .and_then(|status| status.pod_ip.as_ref())
           {
+            debug!("Health check API call for {}", ip);
             let uri = format!("http://{}:{}/jibri/api/v1.0/health", ip, *JIBRI_HEALTH_PORT);
             let res = http_client.get(uri.parse()?).await?;
             let status: JibriStatus =
@@ -49,6 +51,7 @@ pub async fn sweeper(
 
             if status.busy_status == JibriBusyStatus::Expired {
               pods.delete(name, &DeleteParams::default()).await?;
+              info!("Pod {} deleted successfully by jibri-pod-controller", name);
             }
           }
         }

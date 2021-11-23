@@ -23,15 +23,13 @@ spec:
         imagePullPolicy: Always
         env:
         - name: RUST_LOG
-          value: info
+          value: debug
         - name: PORT
           value: "8080"
         - name: JIBRI_HEALTH_PORT
           value: "2222"
         - name: JIBRI_BUSY_LABELS
           value: app=jibri,state=busy
-        - name: POD_DELETION_DELAY
-          value: "60"
         - name: SWEEP_INTERVAL
           value: "300"
         - name: POD_NAME
