@@ -43,4 +43,4 @@ unknown-git = "deny"
 allow-registry = ["https://github.com/rust-lang/crates.io-index"]
 
 [sources.allow-org]
-github = ["avstack"]
+github = []
