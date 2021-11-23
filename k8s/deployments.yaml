@@ -29,6 +29,8 @@ spec:
           value: "2222"
         - name: JIBRI_BUSY_LABELS
           value: app=jibri,state=busy
+        - name: POD_DELETION_DELAY
+          value: "100"
         - name: SWEEP_INTERVAL
           value: "300"
         - name: POD_NAME
