@@ -23,7 +23,7 @@ spec:
         imagePullPolicy: Always
         env:
         - name: RUST_LOG
-          value: debug
+          value: info
         - name: PORT
           value: "8080"
         - name: JIBRI_HEALTH_PORT
