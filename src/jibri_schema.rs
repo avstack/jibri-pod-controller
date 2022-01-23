@@ -9,6 +9,12 @@ pub struct JibriWebhookRequest {
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
+pub struct JibriStatusResponse {
+  pub status: JibriStatus,
+}
+
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct JibriStatus {
   pub busy_status: JibriBusyStatus,
   pub health: JibriHealth,

@@ -11,10 +11,10 @@ use tokio::{
   sync::watch,
   time::{interval, MissedTickBehavior},
 };
-use tracing::{debug, info};
+use tracing::{debug, info, warn};
 
 use crate::{
-  jibri_schema::{JibriBusyStatus, JibriStatus},
+  jibri_schema::{JibriBusyStatus, JibriStatusResponse},
   JIBRI_BUSY_LABELS, JIBRI_HEALTH_PORT, SWEEP_INTERVAL,
 };
 
@@ -41,17 +41,8 @@ pub async fn sweeper(
             .as_ref()
             .and_then(|status| status.pod_ip.as_ref())
           {
-            info!("Health check API call for {}", ip);
-            let uri = format!("http://{}:{}/jibri/api/v1.0/health", ip, *JIBRI_HEALTH_PORT);
-            let res = http_client.get(uri.parse()?).await?;
-            let status: JibriStatus =
-              serde_json::from_reader(hyper::body::aggregate(res.into_body()).await?.reader())?;
-
-            info!(%name, ?status);
-
-            if status.busy_status == JibriBusyStatus::Expired {
-              pods.delete(name, &DeleteParams::default()).await?;
-              info!("Pod {} deleted successfully by jibri-pod-controller", name);
+            if let Err(e) = check_jibri_status(&http_client, &pods, name, ip).await {
+              warn!("sweeper: failed to check jibri status: {}", e);
             }
           }
         }
@@ -67,6 +58,28 @@ pub async fn sweeper(
     }
 
     interval.tick().await;
+  }
+
+  Ok(())
+}
+
+async fn check_jibri_status(
+  http_client: &Client<HttpConnector>,
+  pods: &Api<Pod>,
+  name: &str,
+  ip: &str,
+) -> Result<()> {
+  info!("Health check API call for {}", ip);
+  let uri = format!("http://{}:{}/jibri/api/v1.0/health", ip, *JIBRI_HEALTH_PORT);
+  let res = http_client.get(uri.parse()?).await?;
+  let response: JibriStatusResponse =
+    serde_json::from_reader(hyper::body::aggregate(res.into_body()).await?.reader())?;
+
+  info!(%name, ?response);
+
+  if response.status.busy_status == JibriBusyStatus::Expired {
+    pods.delete(name, &DeleteParams::default()).await?;
+    info!("Pod {} deleted successfully by jibri-pod-controller", name);
   }
 
   Ok(())
