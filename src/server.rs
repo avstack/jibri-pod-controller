@@ -105,7 +105,10 @@ async fn handle_request(req: Request<Body>, pods: Api<Pod>) -> Result<Response<B
           let patch = json!({
             "apiVersion": "v1",
             "kind": "Pod",
-            "metadata": {"labels": labels},
+            "metadata": {
+              "labels": labels,
+              "annotations": {"cluster-autoscaler.kubernetes.io/safe-to-evict": "false"},
+            },
           });
           pods
             .patch(
