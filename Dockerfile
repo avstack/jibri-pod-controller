@@ -1,6 +1,6 @@
 FROM docker.io/library/rust:1.56.1-alpine3.14 AS builder
 COPY . /usr/src/jibri-pod-controller
-RUN apk --no-cache --update add build-base libc6-compat perl \
+RUN apk --no-cache --update add build-base libc6-compat perl pkgconfig\
  && cd /usr/src/jibri-pod-controller \
  && RUSTFLAGS="-D warnings" CFLAGS=$([ "$(apk --print-arch)" = "aarch64" ] && echo "-mno-outline-atomics" || echo "") cargo build --release --locked
 
